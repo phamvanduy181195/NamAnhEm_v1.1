@@ -1,0 +1,3 @@
+List các thư viện dùng :
+updateBatch: dùng để update nhiều record 1 (thư viện hỗ trợ framework laravel)
+link thư viện : https://packagist.org/packages/mavinoo/laravel-batch

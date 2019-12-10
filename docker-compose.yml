@@ -1,0 +1,67 @@
+version: '2.1'
+
+services:
+  application:
+    image: debian
+    volumes:
+      - ./:/var/www/app
+  workspace:
+    image: mrfloat/laravel-env-docker:latest
+    restart: always
+    volumes_from:
+      - application
+    tty: true
+    links:
+      - mysql
+      - nginx:shop.localhost
+    volumes:
+      - ./20-php-max-exec.ini:/etc/php/7.2/fpm/conf.d/20-php-max-exec.ini
+  mysql:
+    restart: always
+    image: mysql:5.7
+    volumes:
+      - ./.docker/mysql:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: shop
+      MYSQL_USER: shop
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+  adminer:
+    image: adminer:latest
+    restart: always
+    ports:
+      - 8000:8080
+  nginx:
+    image: mrfloat/nginx-env-docker
+    restart: always
+    volumes_from:
+      - application
+    ports:
+      - "8080:80"
+      - "443:443"
+    tty: true
+    command: /bin/bash -c "/serve.sh workspace shop.localhost /var/www/app/public && nginx"
+  node:
+    image: mrfloat/vue-env-docker
+    environment:
+      - NODE_ENV=development
+    restart: always
+    volumes:
+      - ./.documents/api:/var/www/app
+    tty: true
+    ports:
+      - "4000:4000"
+  redis:
+    restart: always
+    image: redis:latest
+    expose:
+      - "6379"
+    volumes:
+      - ./.docker/redis:/data
+  mailcatcher:
+    image: yappabe/mailcatcher
+    ports:
+      - 1025:1025
+      - 1080:1080

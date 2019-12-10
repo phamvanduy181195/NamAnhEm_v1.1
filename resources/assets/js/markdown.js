@@ -1,0 +1,2 @@
+
+window.simpleMDE = require('simplemde');
