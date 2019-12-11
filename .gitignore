@@ -1,9 +1,9 @@
-node_modules
-public
+/node_modules
+/public
 /storage/*.key
 /public/*
-vendor
-.env.example
+/vendor
+.env
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml
